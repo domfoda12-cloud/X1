@@ -1,0 +1,496 @@
+<title>Natal em Ordem Pages</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=Inter:wght@400;500;600&family=Caveat:wght@500;700&display=swap">
+<style>
+/* Layout: a contact sheet of the 25 printables, each real-looking page beside its delivery notes, grouped by week */
+:root{
+  --ground:#e8eeea; --card:#f6f9f7; --fg:#17231d; --muted:#57665e; --line:#cdd8d1;
+  --pine:#1f5a41; --berry:#b02a42; --gold:#b8871f;
+  --paper:#fdfefc; --ink:#1b2620; --ink-soft:#5b6a62; --rule:#c9d3cd; --tint:#eef4f0; --hand:#1d4fa0;
+  --f-display:"Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
+  --f-body:"Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --f-hand:"Caveat", "Comic Sans MS", cursive;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --ground:#0f1613; --card:#17201b; --fg:#e4ece7; --muted:#9db0a5; --line:#2b3a32;
+  --pine:#6fc39b; --berry:#ef7d91; --gold:#e0b55a; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --ground:#0f1613; --card:#17201b; --fg:#e4ece7; --muted:#9db0a5; --line:#2b3a32;
+  --pine:#6fc39b; --berry:#ef7d91; --gold:#e0b55a; color-scheme:dark}
+*,*::before,*::after{box-sizing:border-box}
+body{background:var(--ground);color:var(--fg);font-family:var(--f-body);line-height:1.5}
+.wrap{max-width:1120px;margin:0 auto;padding-block:40px 80px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+h1,h2,h3{font-family:var(--f-display);text-wrap:balance;margin:0}
+h1{font-size:clamp(2rem,5vw,3.2rem);line-height:1.05;letter-spacing:-.02em}
+h1 em{font-style:normal;color:var(--berry)}
+.lede{max-width:64ch;color:var(--muted);font-size:1.02rem;margin:14px 0 0}
+.eyebrow{font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;color:var(--pine);font-weight:600}
+.top{display:grid;gap:28px;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);align-items:end}
+@media(max-width:820px){.top{grid-template-columns:1fr}}
+.anatomy{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:18px 20px}
+.anatomy h3{font-size:1rem;margin-bottom:8px}
+.anatomy ol{margin:0;padding-left:20px;display:grid;gap:4px;font-size:.88rem}
+.anatomy b{color:var(--fg)}
+.legend{display:flex;flex-wrap:wrap;gap:8px 18px;margin-top:22px;font-size:.82rem;color:var(--muted)}
+.pill{display:inline-flex;align-items:center;gap:6px;border-radius:99px;padding:2px 10px;font-size:.72rem;font-weight:600;letter-spacing:.02em;border:1px solid currentColor}
+.pill.ask{color:var(--berry)} .pill.prem{color:var(--gold)} .pill.fmt{color:var(--pine)}
+nav.weeks{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--ground);display:flex;gap:8px;flex-wrap:wrap;padding-block:12px;margin-top:28px;border-bottom:1px solid var(--line)}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--ground)}
+nav.weeks a{color:var(--fg);text-decoration:none;font-size:.85rem;font-weight:500;padding:5px 12px;border-radius:99px;border:1px solid var(--line);background:var(--card)}
+nav.weeks a:hover,nav.weeks a:focus-visible{border-color:var(--pine);outline:none}
+section.week{margin-top:44px}
+section.week>header{display:flex;flex-wrap:wrap;align-items:baseline;gap:6px 16px;margin-bottom:18px}
+section.week>header h2{font-size:1.55rem}
+section.week>header p{margin:0;color:var(--muted);font-size:.92rem}
+.day{display:grid;grid-template-columns:minmax(0,370px) minmax(0,1fr);gap:28px;padding:26px 0;border-top:1px solid var(--line)}
+@media(max-width:760px){.day{grid-template-columns:1fr}}
+.day>div{min-width:0}
+.notes{min-width:0;display:flex;flex-direction:column;gap:12px}
+.notes .dn{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.notes .num{font-family:var(--f-display);font-weight:700;font-size:2.4rem;line-height:1;color:var(--pine);font-variant-numeric:tabular-nums}
+.notes h3{font-size:1.25rem}
+.notes dl{margin:0;display:grid;grid-template-columns:110px minmax(0,1fr);gap:8px 14px;font-size:.9rem}
+@media(max-width:460px){.notes dl{grid-template-columns:1fr;gap:2px}.notes dd{margin-bottom:8px}}
+.notes dt{font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);font-weight:600;padding-top:3px}
+.notes dd{margin:0}
+.notes .subj{font-family:var(--f-body);background:var(--card);border:1px solid var(--line);border-radius:6px;padding:6px 10px;display:inline-block}
+.callout{border-left:3px solid var(--berry);padding:6px 12px;font-size:.88rem;background:var(--card)}
+.callout.prem{border-left-color:var(--gold)}
+
+/* ---------- the printable sheet ---------- */
+.sheet{background:var(--paper);color:var(--ink);width:100%;max-width:370px;aspect-ratio:210/297;box-shadow:0 1px 2px rgba(0,0,0,.08),0 10px 28px rgba(20,40,30,.14);padding:20px 20px 14px;font-size:10.5px;line-height:1.38;display:flex;flex-direction:column;gap:9px;position:relative}
+.phone{background:#111;border-radius:30px;padding:9px;max-width:250px;width:100%;box-shadow:0 10px 28px rgba(20,40,30,.2)}
+.phone .sheet{aspect-ratio:9/18.5;max-width:none;box-shadow:none;border-radius:22px;padding:22px 16px 14px;font-size:11px}
+.sh-top{display:flex;justify-content:space-between;align-items:center;font-size:8px;letter-spacing:.14em;text-transform:uppercase;color:#1f5a41;font-weight:600;border-bottom:1.5px solid #1f5a41;padding-bottom:5px}
+.sh-top span:last-child{color:#b02a42;font-variant-numeric:tabular-nums}
+.sh-title{font-family:var(--f-display);font-weight:700;font-size:19px;line-height:1.05;letter-spacing:-.01em}
+.phone .sh-title{font-size:18px}
+.sh-sub{color:var(--ink-soft);margin-top:2px}
+.today{background:var(--tint);border:1px dashed #1f5a41;border-radius:5px;padding:6px 8px;font-size:9.8px}
+.today b{color:#1f5a41;text-transform:uppercase;letter-spacing:.08em;font-size:8px;display:block}
+.sh-body{flex:1;display:flex;flex-direction:column;gap:8px;min-height:0}
+.sh-foot{display:flex;justify-content:space-between;gap:8px;font-size:8px;color:var(--ink-soft);border-top:1px solid var(--rule);padding-top:5px}
+.sh-foot b{color:#b02a42}
+.hw{font-family:var(--f-hand);color:var(--hand);font-size:1.32em;line-height:1;font-weight:500}
+.lbl{font-size:7.8px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-soft);font-weight:600}
+table.t{width:100%;border-collapse:collapse;font-size:9.4px;table-layout:fixed}
+table.t td,table.t th{overflow-wrap:anywhere}
+table.t th{font-size:7.6px;letter-spacing:.08em;text-transform:uppercase;text-align:left;color:#fff;background:#1f5a41;padding:3px 4px;font-weight:600}
+table.t td{border-bottom:1px solid var(--rule);padding:3px 4px;height:17px;vertical-align:bottom}
+table.t td.c{text-align:center}
+table.t td.r{text-align:right;font-variant-numeric:tabular-nums}
+ul.ck{list-style:none;margin:0;padding:0;display:grid;gap:3px}
+ul.ck li{display:flex;gap:6px;align-items:baseline}
+ul.ck li::before{content:"";flex:none;width:8px;height:8px;border:1.2px solid var(--ink);border-radius:2px;transform:translateY(1px)}
+ul.ck li.on::before{background:#1f5a41;border-color:#1f5a41}
+ul.ck li.on{color:var(--ink-soft);text-decoration:line-through}
+.cols{display:grid;gap:8px}
+.cols>*{min-width:0;overflow-wrap:anywhere}
+.c2{grid-template-columns:1fr 1fr}.c3{grid-template-columns:1fr 1fr 1fr}
+.box{border:1px solid var(--rule);border-radius:4px;padding:5px 7px}
+.box h4{margin:0 0 3px;font-size:8px;letter-spacing:.1em;text-transform:uppercase;color:#1f5a41}
+.cut{border:1.2px dashed #9aa8a0;border-radius:4px;padding:6px 7px;position:relative}
+.cut::after{content:"✂";position:absolute;top:-8px;right:4px;font-size:9px;color:#9aa8a0;background:var(--paper);padding:0 2px}
+.ln{border-bottom:1px solid var(--rule);height:15px}
+.big{font-family:var(--f-display);font-weight:700;font-size:22px;color:#1f5a41;font-variant-numeric:tabular-nums}
+.grid25{display:grid;grid-template-columns:repeat(5,1fr);gap:4px;flex:1}
+.grid25 div{border:1.2px solid #1f5a41;border-radius:4px;display:flex;align-items:flex-start;justify-content:flex-start;padding:3px 4px;font-family:var(--f-display);font-weight:700;font-size:12px;color:#1f5a41;position:relative;min-height:34px}
+.grid25 div.x::after{content:"✕";position:absolute;inset:0;display:grid;place-items:center;font-family:var(--f-hand);font-size:30px;color:#b02a42;font-weight:700}
+.grid25 div.star{background:#b02a42;color:#fff;border-color:#b02a42}
+.ws{display:grid;grid-template-columns:repeat(8,1fr);gap:1px;font-family:var(--f-display);font-weight:700;font-size:11px;text-align:center}
+.ws span{border:1px solid var(--rule);padding:1px 0}
+.ws span.f{background:#fde5ea}
+.bingo{display:grid;grid-template-columns:repeat(4,1fr);gap:3px}
+.bingo div{border:1.2px solid #1f5a41;border-radius:3px;font-size:8.2px;padding:4px 3px;text-align:center;min-height:30px;display:grid;place-items:center;line-height:1.15;position:relative}
+.bingo div.x::after{content:"";position:absolute;inset:4px;border:2px solid #b02a42;border-radius:50%;opacity:.8}
+.steps{display:grid;gap:5px}
+.steps .st{display:grid;grid-template-columns:16px 1fr;gap:6px;align-items:start}
+.steps .st i{font-style:normal;width:16px;height:16px;border-radius:50%;background:#1f5a41;color:#fff;font-size:8.5px;display:grid;place-items:center;font-weight:600}
+.tl{display:grid;gap:3px;border-left:2px solid #1f5a41;padding-left:8px;margin-left:30px}
+.tl div{position:relative}
+.tl div b{position:absolute;left:-46px;width:34px;text-align:right;font-variant-numeric:tabular-nums;color:#1f5a41}
+.tl div.hi b,.tl div.hi{color:#b02a42;font-weight:600}
+.msg{background:var(--tint);border-radius:10px 10px 10px 2px;padding:6px 8px;font-size:10px}
+.copy{float:right;font-size:7.5px;letter-spacing:.08em;text-transform:uppercase;color:#1f5a41;font-weight:700}
+.bar{height:6px;background:var(--tint);border-radius:3px;overflow:hidden}
+.bar i{display:block;height:100%;background:#1f5a41}
+.cert{border:2px double #b8871f;border-radius:6px;padding:8px;text-align:center}
+.cert .t1{font-family:var(--f-display);font-weight:700;font-size:13px;color:#b02a42}
+svg text{font-family:var(--f-body)}
+@media (prefers-reduced-motion:no-preference){.sheet{transition:transform .2s}.day:hover .sheet{transform:translateY(-2px)}}
+</style>
+
+<div class="wrap">
+  <div class="top">
+    <div>
+      <div class="eyebrow">X1 · Christmas campaign · page mockups</div>
+      <h1>Natal em Ordem: <em>what lands in the inbox</em> every morning, 1–25 December</h1>
+      <p class="lede">All 25 daily pages, drawn the way the subscriber will see them. The blue handwriting shows a page being used, so you can judge whether each one is actually useful. Each page sits next to its delivery notes: the email subject, what the person does, why it works, and where the payment asks and paid offers go.</p>
+    </div>
+    <div class="anatomy">
+      <h3>Every page has the same 5 parts</h3>
+      <ol>
+        <li><b>Header</b>: brand and "DIA 07 / 25" counter</li>
+        <li><b>Title and one-line promise</b></li>
+        <li><b>"Faça hoje · 10 min"</b>: the single action for today</li>
+        <li><b>The tool</b>: table, checklist, cut-outs or recipe</li>
+        <li><b>Footer</b>: one tip, plus "risque a casinha X" (cross off box X on the Day 1 poster), which keeps the daily habit going</li>
+      </ol>
+    </div>
+  </div>
+  <div class="legend">
+    <span><span class="pill fmt">A4</span> printable page</span>
+    <span><span class="pill fmt">Celular</span> made to read on a phone</span>
+    <span><span class="pill ask">Pedido</span> pay-what-it's-worth ask in that day's email</span>
+    <span><span class="pill prem">Premium</span> paid bundle mentioned</span>
+  </div>
+  <nav class="weeks" aria-label="Weeks">
+    <a href="#w1">Semana 1 · Planejar</a><a href="#w2">Semana 2 · Preparar</a><a href="#w3">Semana 3 · Ceia</a><a href="#w4">Reta final</a>
+  </nav>
+  <div id="days"></div>
+</div>
+
+<script>
+const H = s => `<span class="hw">${s}</span>`;
+const tbl = (head, rows, cls=[]) => `<table class="t"><thead><tr>${head.map(h=>`<th>${h}</th>`).join("")}</tr></thead><tbody>${rows.map(r=>`<tr>${r.map((c,i)=>`<td class="${cls[i]||""}">${c}</td>`).join("")}</tr>`).join("")}</tbody></table>`;
+const ck = items => `<ul class="ck">${items.map(i=>Array.isArray(i)?`<li class="on">${i[0]}</li>`:`<li>${i}</li>`).join("")}</ul>`;
+const box = (t, c) => `<div class="box"><h4>${t}</h4>${c}</div>`;
+const lines = n => Array.from({length:n},()=>`<div class="ln"></div>`).join("");
+
+const weeks = [
+ {id:"w1", name:"Semana 1 · Planejar", sub:"1–7 Dec · money, gifts and dates. Get the big decisions made early."},
+ {id:"w2", name:"Semana 2 · Preparar", sub:"8–14 Dec · making and wrapping. The most hands-on week, good for photos and UGC."},
+ {id:"w3", name:"Semana 3 · Ceia e festas", sub:"15–21 Dec · the dinner, from guest list to table setting."},
+ {id:"w4", name:"Reta final", sub:"22–25 Dec · last checks, a calm Christmas Eve, and the lead-in to the 2027 planner."},
+];
+
+const days = [
+/* ---------------- WEEK 1 ---------------- */
+{d:1,w:"w1",fmt:"A4",title:"Calendário de contagem regressiva",sub:"Pendure na geladeira. Um dia riscado por manhã.",
+ today:"Imprima, prenda na geladeira e risque o dia 1.",
+ body:()=>`<div class="grid25">${Array.from({length:25},(_,i)=>`<div class="${i<1?"x":""}${i===24?" star":""}">${i+1}</div>`).join("")}</div>
+ <div class="lbl">Minha meta para este Natal</div><div>${H("Gastar menos e curtir mais com a família")}</div>`,
+ tip:"Deixe uma caneta presa ao lado do calendário.",
+ subj:"🎄 Seu Natal em Ordem começa hoje (pendure isto na geladeira)",
+ does:"Prints one page and sticks it on the fridge. Each later email ends with \"risque a casinha X\".",
+ why:"It's on the fridge for 25 days, so the family sees the brand daily and crossing off a box is a small daily win. It's also the obvious photo for ads.",
+},
+{d:2,w:"w1",fmt:"A4",title:"Orçamento de Natal",sub:"Decida o número antes de gastar o primeiro real.",
+ today:"Escreva o valor total e divida pelas categorias.",
+ body:()=>`<div class="cols c2"><div class="box"><h4>Total para o Natal</h4><div class="big">${H("R$ 2.000")}</div></div><div class="box"><h4>De onde vem</h4>${H("13º + reserva")}</div></div>
+ ${tbl(["Categoria","%","Planejado","Real"],[
+  ["Presentes","40%",H("800"),""],["Ceia","25%",H("500"),""],["Confraternizações","15%",H("300"),""],
+  ["Viagem / transporte","10%",H("200"),""],["Decoração","5%",H("100"),""],["Reserva (imprevistos)","5%",H("100"),""]],["","c","r","r"])}
+ <div class="lbl">Se o total for menor, corte primeiro:</div>${ck(["Decoração nova","Presentes para conhecidos","Confraternizações extras"])}`,
+ tip:"Os percentuais são só uma sugestão. Ajuste ao seu Natal.",
+ subj:"Dia 2: o número que salva o seu janeiro",
+ does:"Writes one total, splits it into 6 categories. The \"Real\" column fills in over the month (Day 5 feeds it).",
+ why:"Money stress is the #1 Christmas worry. It sets up the Day 5 tracker and leads into the 2027 planner pitch.",
+},
+{d:3,w:"w1",fmt:"A4",title:"Lista de presentes por pessoa",sub:"Todo mundo num lugar só, com limite de gasto.",
+ today:"Liste todas as pessoas e um limite para cada uma.",
+ body:()=>tbl(["Pessoa","Ideia","Limite","Comprado","Embrulhado"],[
+  [H("Mãe"),H("Kit de chás + caneca"),H("120"),H("✓"),""],[H("Pai"),H("Carteira de couro"),H("100"),"",""],
+  [H("Lucas (8)"),H("Lego médio"),H("150"),H("✓"),H("✓")],[H("Sogra"),H("Vale-spa"),H("120"),"",""],
+  [H("Amigo secreto"),H("até R$ 50"),H("50"),"",""],[H("Professora"),H("Lembrancinha (dia 12)"),H("15"),"",""],
+  ["","","","",""],["","","","",""],["","","","",""],["","","","",""]],["","","r","c","c"])+
+  `<div class="cols c2"><div class="box"><h4>Total dos limites</h4>${H("R$ 555")} de ${H("R$ 800")}</div><div class="box"><h4>Falta comprar</h4>${H("4 presentes")}</div></div>`,
+ tip:"Sem ideia para alguém? Deixe em branco. Amanhã chegam 100 ideias.",
+ subj:"Dia 3: a lista que acaba com o “o que eu dou pra ele?”",
+ does:"Lists every person with a spending limit. Blank ideas are fine because Day 4 fills them.",
+ why:"Ending on \"tomorrow, 100 ideas\" gives them a reason to open tomorrow's email.",
+},
+{d:4,w:"w1",fmt:"Celular",tag:"ask",title:"100 ideias de presente",sub:"Por perfil e por faixa de preço.",
+ today:"Escolha uma ideia para cada nome em branco do Dia 3.",
+ body:()=>`<div class="lbl">Para quem já tem tudo</div>
+ ${tbl(["Até R$ 50","R$ 50–150"],[["Vale “1 jantar feito por mim”","Experiência: aula de vinho"],["Porta-retrato com foto antiga","Kit café especial"],["Playlist + carta escrita","Ingresso de show / teatro"]])}
+ <div class="lbl">Crianças 6–10</div>
+ ${tbl(["Até R$ 50","R$ 50–150"],[["Massinha + forminhas","Lego médio"],["Livro de adesivos","Kit de ciências"]])}
+ <div class="lbl">Outros perfis</div><div style="color:#5b6a62">Adolescente · Sogra · Colega de trabalho · Amigo secreto · Professora · Avós · Pet</div>`,
+ tip:"Toque em um perfil para ver mais.",
+ subj:"Dia 4: 100 ideias de presente (salve este e-mail)",
+ does:"Scrolls on the phone while shopping. Reads by profile and picks one idea for each blank in Day 3.",
+ why:"The most useful-feeling page of the first week, and people save it, so it's the right day for the first ask.",
+ extra:`<div class="callout"><b>Ask #1 in the email:</b> “Este planner é gratuito e continua sendo. Se ele já te ajudou, pague quanto achar justo, até R$ 5. Isso mantém o Natal em Ordem grátis para quem não pode pagar.” [R$ 5] [R$ 10] [R$ 20] [outro valor]</div>`
+},
+{d:5,w:"w1",fmt:"A4",title:"Controle de gastos",sub:"Cada compra anotada. O saldo sempre à vista.",
+ today:"Anote tudo que já gastou com o Natal até agora.",
+ body:()=>`<div class="cols c2"><div class="box"><h4>Orçamento presentes</h4>${H("R$ 800")}</div><div class="box"><h4>Saldo hoje</h4><span class="big" style="font-size:18px">${H("R$ 485")}</span></div></div>
+ <div class="bar"><i style="width:39%"></i></div>
+ ${tbl(["Data","Loja","Para quem","Valor","Saldo"],[
+  [H("02/12"),H("Shopping"),H("Mãe"),H("118"),H("682")],[H("03/12"),H("Site X"),H("Lucas"),H("147"),H("535")],
+  [H("04/12"),H("Papelaria"),H("Embrulhos"),H("50"),H("485")],["","","","",""],["","","","",""],["","","","",""],["","","","",""],["","","","",""]],["","","","r","r"])}`,
+ tip:"Imprima 2 cópias: uma para presentes, outra para a ceia.",
+ subj:"Dia 5: quanto você já gastou? (2 minutos)",
+ does:"Writes down every Christmas purchase so far. A running balance against the Day 2 budget.",
+ why:"Seeing \"R$ 485 left\" is calming. It's also a habit they keep using all month without new content.",
+},
+{d:6,w:"w1",fmt:"A4",title:"Datas e prazos",sub:"Tudo o que tem dia marcado em dezembro.",
+ today:"Confira os prazos das lojas onde você compra e anote aqui.",
+ body:()=>`<div class="tl">
+  <div><b>08/12</b>${H("Confraternização do trabalho")}</div>
+  <div class="hi"><b>10/12</b>${H("Último dia frete grátis loja X")}</div>
+  <div><b>13/12</b>${H("Festa da escola do Lucas")}</div>
+  <div class="hi"><b>16/12</b>${H("Último envio pelos Correios (confirmar)")}</div>
+  <div><b>20/12</b>${H("Amigo secreto da família")}</div>
+  <div><b>23/12</b>${H("Buscar encomendas da ceia")}</div>
+  <div class="hi"><b>24/12</b>Ceia de Natal</div>
+  <div><b>31/12</b>Réveillon</div></div>
+  <div class="lbl">Prazos de entrega (preencha com o site de cada loja)</div>
+  ${tbl(["Loja / transportadora","Pedido até"],[["",""],["",""],["",""]])}`,
+ tip:"Em vermelho: prazos que não voltam. Coloque alarme no celular.",
+ subj:"Dia 6: as datas que não podem passar",
+ does:"Puts every December deadline on one timeline. They fill in each shop's delivery cut-off themselves.",
+ why:"It prevents the \"the present won't arrive in time\" panic. We never print exact courier dates. They fill those in and confirm them, so the page can't be wrong.",
+},
+{d:7,w:"w1",fmt:"A4",title:"Kit do amigo secreto",sub:"Sorteio, regras e cartões. Pronto para imprimir.",
+ today:"Defina valor e data, imprima os papéis do sorteio.",
+ body:()=>`<div class="cols c2">${box("Regras",`Valor: ${H("até R$ 50")}<br>Data: ${H("20/12")}<br>Tema: ${H("algo de comer")}`)}${box("Participantes",`${H("Ana, Beto, Carla, Duda, Edu, Fê, Gil, Hugo")}`)}</div>
+ <div class="lbl">Papéis do sorteio (recorte e dobre)</div>
+ <div class="cols c3">${["Ana","Beto","Carla","Duda","Edu","Fê"].map(n=>`<div class="cut" style="text-align:center">${H(n)}</div>`).join("")}</div>
+ <div class="lbl">Cartão de revelação</div>
+ <div class="cut"><b>Meu amigo secreto é…</b><br>uma pessoa que ${H("ri alto e ama café")}<div class="ln"></div></div>`,
+ tip:"Sorteio online? Use os mesmos cartões de revelação.",
+ subj:"Dia 7: o kit do amigo secreto (sorteio + cartões)",
+ does:"Prints, cuts, and runs the draw at work or with family.",
+ why:"It gets shared: everyone at the draw sees the printout, and some ask where it came from. That's free word of mouth.",
+},
+/* ---------------- WEEK 2 ---------------- */
+{d:8,w:"w2",fmt:"A4",title:"Plano da decoração",sub:"O que já tem, o que falta, o que dá para fazer.",
+ today:"Abra a caixa de decoração e preencha as 3 colunas.",
+ body:()=>`<div class="cols c3">${box("Já tenho",ck([["Árvore"],["Pisca-pisca (2)"],"Bolas vermelhas","Guirlanda"]))}${box("Falta",ck([H("Pisca-pisca 3"),H("Toalha de mesa"),H("Velas")]))}${box("Faço em casa",ck([H("Guirlanda de pinha"),H("Estrela de papel"),H("Laranja seca")]))}</div>
+ ${box("Gasto previsto",`${H("R$ 85")} de ${H("R$ 100")} (orçamento dia 2)`)}
+ <div class="lbl">Ideias que custam quase nada</div>${ck(["Rodelas de laranja secas no forno (2h, 90°C)","Pinhas pintadas com tinta branca","Estrela de papel kraft dobrado"])}`,
+ tip:"Teste o pisca-pisca antes de pendurar.",
+ subj:"Dia 8: decoração sem gastar à toa",
+ does:"Takes stock before buying. The \"falta\" column becomes a short shopping list.",
+ why:"It saves money (ties back to Day 2) and the DIY ideas are photogenic for parent UGC.",
+},
+{d:9,w:"w2",fmt:"Celular",title:"20 mensagens de Natal prontas",sub:"Copie, cole, mande. Família, trabalho, clientes.",
+ today:"Mande a mensagem para 3 pessoas que você não vê faz tempo.",
+ body:()=>`<div class="lbl">Família</div>
+ <div class="msg"><span class="copy">Copiar</span>Que a nossa mesa seja cheia de risadas e a casa de abraços. Feliz Natal, amo vocês!</div>
+ <div class="lbl">Trabalho</div>
+ <div class="msg"><span class="copy">Copiar</span>Obrigado pela parceria este ano. Desejo um Natal tranquilo e um 2027 de boas conquistas!</div>
+ <div class="lbl">Amigo distante</div>
+ <div class="msg"><span class="copy">Copiar</span>A distância não apaga nada. Pensei em você hoje. Feliz Natal, vamos nos ver em 2027?</div>
+ <div style="color:#5b6a62">+ 17 mensagens: clientes, professores, condomínio, cartão escrito à mão</div>`,
+ tip:"Mande hoje. Na véspera todo mundo manda e ninguém lê.",
+ subj:"Dia 9: 20 mensagens de Natal prontas para copiar",
+ does:"Taps \"Copiar\" and pastes into WhatsApp. Two minutes.",
+ why:"Instant value with no printing. Also the easiest day to ask \"forward this to someone\" (referral loop).",
+},
+{d:10,w:"w2",fmt:"A4",tag:"prem",title:"Etiquetas de presente",sub:"8 etiquetas para recortar e colar.",
+ today:"Imprima, recorte e deixe junto com o papel de presente.",
+ body:()=>`<div class="cols c2" style="flex:1">${["Mãe","Lucas","Pai","Sogra","",""," ",""].map((n,i)=>`<div class="cut" style="min-height:58px"><div style="font-family:var(--f-display);font-weight:700;color:${i%2?"#b02a42":"#1f5a41"};font-size:11px">${["Feliz Natal!","Ho ho ho!","Com carinho","Boas festas!"][i%4]}</div>Para: ${n.trim()?H(n):"______"}<br>De: ${n.trim()?H("Ju"):"______"}</div>`).join("")}</div>`,
+ tip:"Imprima em papel mais grosso (180g) se tiver.",
+ subj:"Dia 10: etiquetas prontas + uma novidade",
+ does:"Prints, cuts, and uses them while wrapping.",
+ why:"Something physical for free makes the paid version easy to explain: \"want 40 designs and a matching wrapping paper print? that's Premium\".",
+ extra:`<div class="callout prem"><b>Premium launch in this email:</b> 40 tag designs, printable wrapping paper, 30 recipes, kids' activity book, Réveillon planner. Price around R$ 27–37.</div>`
+},
+{d:11,w:"w2",fmt:"A4",title:"Embrulho barato e bonito",sub:"5 técnicas com papel kraft, jornal e barbante.",
+ today:"Embrulhe 1 presente com a técnica 1.",
+ body:()=>`<div class="lbl">Técnica 1 · Kraft + barbante + raminho</div>
+ <div class="steps">${["Corte o kraft com 5 cm a mais em cada lado da caixa.","Dobre as pontas em triângulo e prenda com fita dupla face (não aparece).","Passe o barbante 3 vezes e dê um laço simples.","Prenda um raminho de alecrim ou pinheiro no laço.","Cole a etiqueta do Dia 10."].map((s,i)=>`<div class="st"><i>${i+1}</i><span>${s}</span></div>`).join("")}</div>
+ <div class="lbl">Outras técnicas nesta página</div>${ck(["2 · Jornal + fita vermelha","3 · Tecido amarrado (furoshiki)","4 · Caixa de sapato decorada","5 · Saquinho de papel com carimbo de batata"])}`,
+ tip:"Custo médio: R$ 3 por presente com kraft em rolo.",
+ subj:"Dia 11: embrulhos que parecem de loja (custando R$ 3)",
+ does:"Follows the numbered steps while wrapping one gift.",
+ why:"Very visual: the best day to ask \"send us a photo\", which gives you real UGC for ads in weeks 3–4.",
+},
+{d:12,w:"w2",fmt:"A4",tag:"ask",title:"Lembrancinhas caseiras",sub:"10 ideias baratas, com custo e tempo de cada uma.",
+ today:"Escolha 1 ideia e faça a lista de ingredientes.",
+ body:()=>tbl(["Ideia","Custo/un","Tempo","Para"],[
+  ["Biscoito amanteigado no pote","R$ 6","1h",H("professora")],["Sal temperado com ervas","R$ 4","20 min",H("vizinhos")],
+  ["Vela em xícara antiga","R$ 8","40 min",""],["Granola caseira","R$ 7","45 min",""],["Brigadeiro de colher no potinho","R$ 3","30 min",H("trabalho")],
+  ["Mix de chocolate quente","R$ 5","15 min",""],["Sabonete artesanal","R$ 6","1h",""],["Doce de leite no vidrinho","R$ 5","2h",""],
+  ["Marcador de livro bordado","R$ 2","30 min",""],["Muda de planta no copo","R$ 4","10 min",""]],["","r","",""])+
+  `<div class="cut"><b style="color:#b02a42">Feito com carinho por</b> ${H("Ju")} · para ${H("Prof. Marta")}</div>`,
+ tip:"Faça em lote: 10 potes de uma vez custam menos que 10 presentes comprados.",
+ subj:"Dia 12: metade do caminho (e 10 presentes por menos de R$ 8)",
+ does:"Picks one homemade gift for the \"small\" people (teacher, neighbours, coworkers).",
+ why:"Halfway point, and it saves real money. Good timing for the second ask, framed around progress.",
+ extra:`<div class="callout"><b>Ask #2 (light):</b> “Você já tem orçamento, lista, datas e embrulhos prontos. Faltam 13 dias. Se o Natal em Ordem está ajudando, contribua com quanto achar justo.” Plus a halfway badge image.</div>`
+},
+{d:13,w:"w2",fmt:"A4",title:"Atividades para as crianças",sub:"Para as tardes de férias: caça-palavras, colorir, desafio.",
+ today:"Imprima e entregue para as crianças depois do almoço.",
+ body:()=>{const g=["NATALROP","ESTRELAM","VUSINOBC","ERANJODF","KPAVETUI","LRENASGH","PRESENTE","BOLAZMQT"];
+  const f=new Set(["0-0","0-1","0-2","0-3","0-4","1-0","1-1","1-2","1-3","1-4","1-5","1-6","2-0","3-0","2-2","2-3","2-4","2-5"]);
+  return `<div class="lbl">Caça-palavras</div><div class="ws">${g.map((r,ri)=>[...r].map((c,ci)=>`<span class="${f.has(ri+"-"+ci)?"f":""}">${c}</span>`).join("")).join("")}</div>
+  <div style="font-size:9px">NATAL ✓ · ESTRELA ✓ · NEVE ✓ · SINO ✓ · ANJO · RENA · PRESENTE · BOLA</div>
+  <div class="cols c2">${box("Desenhe aqui",`<svg viewBox="0 0 100 70" width="100%" aria-label="Árvore para colorir"><polygon points="50,6 78,56 22,56" fill="none" stroke="#1b2620" stroke-width="1.4"/><rect x="45" y="56" width="10" height="9" fill="none" stroke="#1b2620" stroke-width="1.4"/><circle cx="44" cy="38" r="3" fill="none" stroke="#1b2620"/><circle cx="58" cy="46" r="3" fill="none" stroke="#1b2620"/><circle cx="52" cy="26" r="3" fill="none" stroke="#1b2620"/></svg>`)}${box("Desafio",`Conte quantas luzes tem a árvore da sua casa: ${H("47")}`)}</div>`},
+ tip:"Versão completa (20 páginas) no Pacote Premium.",
+ subj:"Dia 13: 30 minutos de silêncio garantidos 😅",
+ does:"Hands it to the kids. The parent gets 20–30 quiet minutes.",
+ why:"School holidays have started, so this answers \"what do I do with the kids?\" It's also a sample of the Premium kids' book.",
+},
+{d:14,w:"w2",fmt:"A4",title:"Carta ao Papai Noel",sub:"Para a criança preencher, com certificado.",
+ today:"Sente com a criança e preencham juntos.",
+ body:()=>`<div style="font-family:var(--f-display);font-size:13px;font-weight:700;color:#b02a42">Querido Papai Noel,</div>
+ <div>Meu nome é ${H("Lucas")} e eu tenho ${H("8")} anos.</div>
+ <div>Este ano eu fui bonzinho porque ${H("ajudei a minha irmã com a lição")}</div><div class="ln"></div>
+ <div>Eu gostaria de ganhar:</div><div>1. ${H("Lego de foguete")}</div><div>2. ${H("Bola nova")}</div><div>3. <span class="ln" style="display:inline-block;width:70%"></span></div>
+ <div>Para a minha família eu desejo ${H("que o vovô fique bom")}</div>
+ <div class="cert"><div class="t1">Certificado de bom comportamento</div>Concedido a ${H("Lucas")} · Polo Norte, ${H("14/12/2026")}</div>`,
+ tip:"Guarde a carta. Daqui a 10 anos ela vale ouro.",
+ subj:"Dia 14: a carta que as crianças vão lembrar",
+ does:"Fills it in with the child. Many will photograph and post it.",
+ why:"The most emotional page of the month. It strengthens goodwill before week 3, when the main paid offer is pushed hardest.",
+},
+/* ---------------- WEEK 3 ---------------- */
+{d:15,w:"w3",fmt:"A4",title:"Planejador da ceia",sub:"Quem vem, o que come e quem leva o quê.",
+ today:"Confirme o número de convidados no grupo da família.",
+ body:()=>`<div class="cols c3">${box("Adultos",`<span class="big" style="font-size:18px">${H("8")}</span>`)}${box("Crianças",`<span class="big" style="font-size:18px">${H("4")}</span>`)}${box("Horário",`<span class="big" style="font-size:18px">${H("22h")}</span>`)}</div>
+ ${box("Restrições",`${H("Tia Ana: vegetariana · Pedro: sem lactose")}`)}
+ ${tbl(["Prato","Quem leva / faz","Pronto?"],[
+  ["Entrada: salada de folhas",H("Carla"),""],["Principal: pernil assado",H("Eu"),""],["Opção veg.: torta de legumes",H("Tia Ana"),""],
+  ["Arroz à grega",H("Eu"),""],["Farofa",H("Mãe"),""],["Sobremesa: pavê",H("Beto"),""],["Bebidas + gelo",H("Edu"),""]],["","","c"])}`,
+ tip:"Mande a coluna “quem leva” no grupo. Ninguém esquece.",
+ subj:"Dia 15: a ceia começa hoje (no papel)",
+ does:"Locks the guest count and splits the dishes among the family.",
+ why:"The guest count and menu feed Days 16, 18 and 19, so the next pages build on this one.",
+},
+{d:16,w:"w3",fmt:"A4",title:"Lista de compras da ceia",sub:"Por setor do mercado. O que comprar antes e o que deixar para a véspera.",
+ today:"Preencha e marque o que dá para comprar já.",
+ body:()=>`<div class="cols c2">${box("Comprar até 20/12",`<div class="lbl">Açougue</div>${ck([H("Pernil 4 kg")])}<div class="lbl">Mercearia</div>${ck([[H("Arroz 2 kg")],H("Uva-passa"),H("Farinha de mandioca"),H("Azeite")])}<div class="lbl">Bebidas</div>${ck([H("Refrigerante 6 L"),H("Vinho 4 un.")])}`)}
+ ${box("Véspera (23/12)",`<div class="lbl">Hortifruti</div>${ck([H("Folhas"),H("Tomate"),H("Cebola"),H("Frutas")])}<div class="lbl">Padaria</div>${ck([H("Pão"),H("Panetone")])}<div class="lbl">Outros</div>${ck([H("Gelo 4 kg")])}`)}</div>
+ ${box("Previsto",`${H("R$ 480")} de ${H("R$ 500")} (orçamento dia 2)`)}`,
+ tip:"Carne congelada: tire do freezer 48h antes, na geladeira.",
+ subj:"Dia 16: sua lista de compras organizada por corredor",
+ does:"Takes it to the supermarket (printed or on the phone).",
+ why:"Splitting into \"buy now\" and \"buy on the 23rd\" means fewer queues and less waste, and people notice they spend less.",
+},
+{d:17,w:"w3",fmt:"Celular",title:"Cardápio com receitas fáceis",sub:"5 receitas testadas, ingredientes de mercado comum.",
+ today:"Leia a receita de hoje e confira se tem tudo.",
+ body:()=>`<div class="lbl">Receita do dia</div><div style="font-family:var(--f-display);font-weight:700;font-size:15px;color:#b02a42">Farofa de Natal</div>
+ <div style="color:#5b6a62">10 porções · 25 min · fácil</div>
+ <div class="lbl">Ingredientes</div>${ck(["500 g de farinha de mandioca","200 g de bacon em cubos","1 cebola picada","3 colheres de manteiga","1/2 xícara de uva-passa (opcional)","Salsinha a gosto"])}
+ <div class="lbl">Modo de preparo</div>
+ <div class="steps">${["Frite o bacon até dourar.","Junte a manteiga e a cebola até murchar.","Acrescente a farinha aos poucos, mexendo por 5 min.","Desligue e junte uva-passa e salsinha."].map((s,i)=>`<div class="st"><i>${i+1}</i><span>${s}</span></div>`).join("")}</div>`,
+ tip:"Mais 4 receitas abaixo: arroz, pernil, salpicão, pavê.",
+ subj:"Dia 17: 5 receitas de ceia que não dão errado",
+ does:"Reads in the kitchen on the phone. Follows the numbered steps.",
+ why:"Made for the phone because nobody prints recipes. It's a taste of the 30 recipes in Premium, so mention that again here.",
+},
+{d:18,w:"w3",fmt:"A4",title:"Cronograma da ceia",sub:"Do horário de servir para trás. Tudo pronto junto.",
+ today:"Escreva a hora de servir e ajuste os horários.",
+ body:()=>`<div class="box"><h4>Servir às</h4><span class="big">${H("22:00")}</span></div>
+ <div class="tl">
+  <div><b>Dia 23</b>Temperar o pernil e deixar na geladeira</div>
+  <div><b>14:00</b>Gelar bebidas · arrumar a mesa (Dia 20)</div>
+  <div><b>17:00</b>Pernil no forno, coberto com papel-alumínio</div>
+  <div><b>19:00</b>Banho e roupa da ceia 😄</div>
+  <div><b>20:00</b>Descobrir o pernil para dourar</div>
+  <div><b>20:30</b>Arroz no fogo</div>
+  <div><b>21:15</b>Farofa · montar a salada</div>
+  <div><b>21:40</b>Tirar o pernil e descansar 15 min</div>
+  <div class="hi"><b>22:00</b>Servir 🎄</div></div>`,
+ tip:"Cole na porta do armário da cozinha no dia 24.",
+ subj:"Dia 18: o horário de cada prato (contando de trás pra frente)",
+ does:"Writes the serving time and adjusts each step. Sticks it on a kitchen cupboard on the 24th.",
+ why:"This takes away the cook's biggest worry, everything being ready at once. People remember it and pay for that.",
+},
+{d:19,w:"w3",fmt:"A4",title:"Quanto comprar por pessoa",sub:"Sem faltar e sem sobrar demais.",
+ today:"Multiplique pelos seus convidados do Dia 15.",
+ body:()=>`<div class="box"><h4>Meus convidados</h4>${H("8 adultos + 4 crianças = 10 “porções adulto”")}</div>
+ ${tbl(["Item","Por adulto","Para mim"],[
+  ["Carne (com osso)","400 g",H("4 kg")],["Arroz (cru)","70 g",H("700 g")],["Farofa","50 g",H("500 g")],["Salada","80 g",H("800 g")],
+  ["Sobremesa","1 porção + 20%",H("12")],["Refrigerante / suco","600 ml",H("6 L")],["Água","500 ml",H("5 L")],["Gelo","1 kg / 4 pessoas",H("3 kg")]],["","r","r"])}
+ <div style="font-size:9px;color:#5b6a62">Criança = metade de um adulto. Com petiscos antes, reduza a carne em 20%.</div>`,
+ tip:"Sobrou? Dia 26 chega um e-mail com 5 receitas de reaproveitamento.",
+ subj:"Dia 19: a tabela que evita faltar (ou sobrar) comida",
+ does:"Does the maths once and checks it against the Day 16 shopping list.",
+ why:"A reference page people keep. The tip also promises a Dec 26 email, which keeps them reading after Christmas.",
+},
+{d:20,w:"w3",fmt:"A4",title:"Mesa posta",sub:"Como montar, em uma figura. Mais os cartões de lugar.",
+ today:"Decida onde cada um senta e preencha os cartões.",
+ body:()=>`<svg viewBox="0 0 220 110" width="100%" role="img" aria-label="Esquema de mesa posta">
+  <circle cx="110" cy="62" r="32" fill="none" stroke="#1f5a41" stroke-width="1.5"/><circle cx="110" cy="62" r="21" fill="none" stroke="#1f5a41"/>
+  <rect x="62" y="38" width="4" height="48" rx="2" fill="#1b2620"/><rect x="70" y="38" width="4" height="48" rx="2" fill="#1b2620"/>
+  <rect x="150" y="38" width="4" height="48" rx="2" fill="#1b2620"/><rect x="158" y="44" width="3" height="42" rx="1.5" fill="#1b2620"/>
+  <circle cx="168" cy="22" r="8" fill="none" stroke="#b02a42" stroke-width="1.5"/><circle cx="186" cy="28" r="6" fill="none" stroke="#b02a42" stroke-width="1.5"/>
+  <rect x="34" y="44" width="18" height="30" fill="none" stroke="#b8871f" stroke-width="1.3"/>
+  <text x="68" y="100" font-size="8" fill="#5b6a62" text-anchor="middle">garfos</text><text x="156" y="100" font-size="8" fill="#5b6a62" text-anchor="middle">faca · colher</text>
+  <text x="110" y="64" font-size="8" fill="#5b6a62" text-anchor="middle">prato</text><text x="177" y="10" font-size="8" fill="#5b6a62" text-anchor="middle">taças</text><text x="43" y="40" font-size="8" fill="#5b6a62" text-anchor="middle">guardanapo</text></svg>
+ <div class="lbl">Cartões de lugar (recorte e dobre ao meio)</div>
+ <div class="cols c3">${["Vovó","Tia Ana","Pedro","Lucas","",""].map(n=>`<div class="cut" style="text-align:center;min-height:30px">${n?H(n):""}</div>`).join("")}</div>`,
+ tip:"Crianças perto de quem tem paciência. Você sabe quem é. 😉",
+ subj:"Dia 20: a mesa que parece de revista",
+ does:"Sets one place as practice and writes the place cards.",
+ why:"It looks great in photos on the night, and the cards are a small branded thing that ends up on the dinner table.",
+},
+{d:21,w:"w3",fmt:"A4",title:"Brincadeiras para a família",sub:"Bingo da ceia + 9 jogos sem tela.",
+ today:"Imprima 1 cartela por pessoa.",
+ body:()=>{const b=["Panetone","Piada do pavê","Pisca-pisca piscando","Alguém chega atrasado","Uva-passa no arroz","Foto em grupo","“E o namoro?”","Brinde","Presente repetido","Abraço apertado","Alguém dorme no sofá","Rabanada","Criança acorda tarde","Música de Natal","Tio contando história","Meia de presente"];
+  return `<div class="lbl">Bingo da ceia: marque quando acontecer</div><div class="bingo">${b.map((t,i)=>`<div class="${[0,1,6,9].includes(i)?"x":""}">${t}</div>`).join("")}</div>
+  <div class="lbl">Mais jogos nesta página</div>${ck(["Mímica de filmes de Natal","Quiz da família (perguntas prontas)","Quem sou eu? (post-it na testa)","Amigo secreto de piadas"])}`},
+ tip:"Prêmio do bingo: escolher a primeira fatia do pavê.",
+ subj:"Dia 21: o bingo da ceia (todo mundo vai querer jogar)",
+ does:"Prints one card per guest and plays on the night.",
+ why:"Fun and very shareable: guests ask where it came from, which is free word of mouth on the most social night of the year.",
+},
+/* ---------------- FINAL ---------------- */
+{d:22,w:"w4",fmt:"A4",title:"Checklist das últimas 72 horas",sub:"Tudo o que falta, dividido por dia.",
+ today:"Marque o que já está feito. Sobra pouco.",
+ body:()=>`<div class="cols c3">${box("22/12",ck([["Embrulhar presentes"],["Confirmar convidados"],"Lavar toalha de mesa","Carregar câmera/celular"]))}${box("23/12",ck(["Compras da véspera (Dia 16)","Temperar o pernil","Buscar encomendas","Separar louça"]))}${box("24/12",ck(["Seguir cronograma (Dia 18)","Montar a mesa (Dia 20)","Imprimir bingo (Dia 21)","Respirar (Dia 24)"]))}</div>
+ <div class="box"><h4>Progresso do mês</h4><div class="bar"><i style="width:88%"></i></div><div style="margin-top:3px">${H("22 de 25 casinhas riscadas")}</div></div>
+ <div class="lbl">Ainda falta algo? Anote:</div>${lines(4)}`,
+ tip:"Peça ajuda: delegue 1 item de cada coluna.",
+ subj:"Dia 22: faltam 72 horas, e você está quase pronto",
+ does:"Ticks off what's done. Everything else points back to an earlier page.",
+ why:"It shows how far they've come in one view, which sets up the Day 24 ask.",
+},
+{d:23,w:"w4",fmt:"Celular",title:"Kit da véspera + plano B",sub:"O 24 hora a hora, e o que fazer se algo der errado.",
+ today:"Leia o plano B. Torça para não precisar.",
+ body:()=>`<div class="lbl">Esqueci um presente: 4 saídas em 1 hora</div>
+ ${ck(["Vale-experiência impresso (modelo abaixo)","Cartão escrito à mão + Pix","Lembrancinha do Dia 12 feita hoje","Assinatura digital com cartão bonito"])}
+ <div class="cut"><b style="color:#b02a42">VALE</b> ${H("1 dia de passeio só nós dois")}<br>Válido até ${H("março/2027")}</div>
+ <div class="lbl">Deu errado na cozinha</div>${ck(["Arroz empapado → vira arroz de forno com queijo","Carne crua no meio → fatie e volte ao forno 15 min","Faltou gelo → posto de gasolina 24h"])}`,
+ tip:"Salve este e-mail. Amanhã você não vai ter tempo de procurar.",
+ subj:"Dia 23: o plano B (para o caso de algo dar errado amanhã)",
+ does:"Reads it once and keeps it on the phone for the 24th.",
+ why:"It's reassuring and takes no effort. Also the last useful page before the big ask tomorrow.",
+},
+{d:24,w:"w4",fmt:"A4",tag:"ask",title:"Natal com calma",sub:"Uma página para você, antes da correria da noite.",
+ today:"5 minutos sozinho. Só isso.",
+ body:()=>`<div class="box"><h4>Respiração 4–4–6 (repita 5 vezes)</h4><div class="steps">${["Inspire contando até 4","Segure contando até 4","Solte o ar contando até 6"].map((s,i)=>`<div class="st"><i>${i+1}</i><span>${s}</span></div>`).join("")}</div></div>
+ <div class="lbl">3 coisas boas deste ano</div><div>1. ${H("O Lucas aprendeu a ler")}</div><div>2. ${H("A casa nova")}</div><div>3. ${H("Saúde do vovô")}</div>
+ <div class="lbl">Isso pode ficar para depois</div>${ck(["Louça perfeita","Foto perfeita","Responder todo mundo hoje"])}
+ <div class="lbl">Você riscou</div><div class="bar"><i style="width:96%"></i></div><div>${H("24 de 25 casinhas")}</div>`,
+ tip:"Hoje à noite: aproveite. O planejamento já foi feito.",
+ subj:"Dia 24: você conseguiu (leia antes da ceia)",
+ does:"Takes 5 calm minutes before the evening and sees the month's progress.",
+ why:"The emotional peak, after 23 days of help. This is the strongest ask of the campaign.",
+ extra:`<div class="callout"><b>Ask #3 (strongest):</b> “Em 24 dias você fez orçamento, lista, compras, ceia, mesa e brincadeiras. Se o Natal em Ordem tirou um peso das suas costas, este é o momento de retribuir com quanto achar justo.” Show the list of everything they've done, then [R$ 10] [R$ 20] [R$ 50] [outro valor].</div>`
+},
+{d:25,w:"w4",fmt:"A4",title:"Feliz Natal + notas para o próximo",sub:"O que deu certo, o que mudar. O Natal de 2027 começa aqui.",
+ today:"Anote hoje, enquanto lembra. Leva 5 minutos.",
+ body:()=>`<div class="cert"><div class="t1">Feliz Natal! 🎄</div>Você riscou as 25 casinhas.</div>
+ ${box("Deu certo",`${H("Cronograma da ceia, bingo, etiquetas")}`)}
+ ${box("Mudar no ano que vem",`${H("Comprar presentes em novembro")}`)}
+ ${tbl(["","Planejado","Real"],[["Presentes",H("800"),H("760")],["Ceia",H("500"),H("530")],["Total",H("2.000"),H("1.940")]],["","r","r"])}
+ ${box("Presentes que fizeram sucesso",`${H("Lego (Lucas), vale-spa (sogra)")}`)}
+ <div style="color:#5b6a62;font-size:9px">Guarde esta folha junto da caixa de decoração.</div>`,
+ tip:"Em breve: Planner 2027. Orçamento do ano, metas e hábitos.",
+ subj:"Feliz Natal 🎄 (sem pedido nenhum hoje)",
+ does:"Writes down what worked and fills in planned vs. real spending.",
+ why:"A plain thank-you with no ask. The planned-vs-real table leads straight into the 2027 planner pitch on Dec 27.",
+ extra:`<div class="callout prem"><b>Next email (27 Dec):</b> “Seu Natal fechou em R$ 1.940. Que tal planejar 2027 inteiro assim?” 2027 Planner, early-bird until 31 Dec.</div>`
+},
+];
+
+const root=document.getElementById("days");
+root.innerHTML = weeks.map(w=>`<section class="week" id="${w.id}"><header><h2>${w.name}</h2><p>${w.sub}</p></header>${
+ days.filter(d=>d.w===w.id).map(d=>{
+  const sheet=`<div class="sheet"><div class="sh-top"><span>Natal em Ordem</span><span>Dia ${String(d.d).padStart(2,"0")} / 25</span></div>
+   <div><div class="sh-title">${d.title}</div><div class="sh-sub">${d.sub}</div></div>
+   <div class="today"><b>Faça hoje · 10 min</b>${d.today}</div>
+   <div class="sh-body">${d.body()}</div>
+   <div class="sh-foot"><span>💡 ${d.tip}</span><b>Risque a casinha ${d.d}</b></div></div>`;
+  const tags=`<span class="pill fmt">${d.fmt}</span>${d.tag==="ask"?`<span class="pill ask">Pedido</span>`:""}${d.tag==="prem"?`<span class="pill prem">Premium</span>`:""}`;
+  return `<article class="day" id="dia-${d.d}"><div>${d.fmt==="Celular"?`<div class="phone">${sheet}</div>`:sheet}</div>
+   <div class="notes"><div class="dn"><span class="num">${String(d.d).padStart(2,"0")}</span><h3>${d.title}</h3>${tags}</div>
+   <dl><dt>Email subject</dt><dd><span class="subj">${d.subj}</span></dd><dt>What they do</dt><dd>${d.does}</dd><dt>Why it works</dt><dd>${d.why}</dd></dl>${d.extra||""}</div></article>`;
+ }).join("")}</section>`).join("");
+</script>
